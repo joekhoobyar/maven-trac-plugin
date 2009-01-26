@@ -1,0 +1,11 @@
+<classpath>
+  <classpathentry kind="src" path="src/main/java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/maven/maven-plugin-api/2.0/maven-plugin-api-2.0.jar" sourcepath="M2_REPO/org/apache/maven/maven-plugin-api/2.0/maven-plugin-api-2.0-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/xmlrpc/xmlrpc-client/3.1/xmlrpc-client-3.1.jar" sourcepath="M2_REPO/org/apache/xmlrpc/xmlrpc-client/3.1/xmlrpc-client-3.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/xmlrpc/xmlrpc-common/3.1/xmlrpc-common-3.1.jar" sourcepath="M2_REPO/org/apache/xmlrpc/xmlrpc-common/3.1/xmlrpc-common-3.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/ws/commons/util/ws-commons-util/1.0.2/ws-commons-util-1.0.2.jar" sourcepath="M2_REPO/org/apache/ws/commons/util/ws-commons-util/1.0.2/ws-commons-util-1.0.2-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" sourcepath="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar"/>
+</classpath>

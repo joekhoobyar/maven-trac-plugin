@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.googlecode.maven.plugin</groupId>
+	<groupId>com.googlecode.mojo.trac</groupId>
 	<artifactId>maven-trac-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<version>1.0-SNAPSHOT</version>
@@ -12,6 +12,61 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.mylyn.trac</groupId>
+			<artifactId>core</artifactId>
+			<version>3.0.3.v20081015-1500-e3x</version>
+			<scope>system</scope>
+			<systemPath>
+				${basedir}/mylyn-3.0.3.v20081015-1500-extras/plugins/org.eclipse.mylyn.trac.core_3.0.3.v20081015-1500-e3x.jar
+			</systemPath>
+			<exclusions>
+				<!-- 
+					<exclusion>
+					<groupId>org.eclipse.core</groupId>
+					<artifactId>runtime</artifactId>
+					</exclusion>
+				-->
+				<exclusion>
+					<groupId>org.eclipse.mylyn.tasks</groupId>
+					<artifactId>core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse</groupId>
+					<artifactId>search</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.mylyn.monitor</groupId>
+					<artifactId>core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.mylyn.context</groupId>
+					<artifactId>core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse</groupId>
+					<artifactId>mylyn</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.mylyn.web</groupId>
+					<artifactId>core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.equinox</groupId>
+					<artifactId>app</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
 			<version>2.0</version>
 		</dependency>
 		<dependency>
@@ -27,13 +82,37 @@
 		</dependency>
 	</dependencies>
 
+	<distributionManagement>
+		<repository>
+			<id>maven-trac-plugin.googlecode.releases</id>
+			<name>maven-trac-plugin.googlecode.releases</name>
+			<url>
+				dav:https://maven-trac-plugin.googlecode.com/svn/maven2/
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>maven-trac-plugin.googlecode.snapshots</id>
+			<name>maven-trac-plugin.googlecode.snapshots</name>
+			<url>
+				dav:https://maven-trac-plugin.googlecode.com/svn/maven2-snapshots/
+			</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>Eclipse</id>
+			<url>http://repo2.maven.org/eclipse/</url>
+		</repository>
+	</repositories>
+
 	<profiles>
 		<profile>
 			<id>test</id>
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>com.googlecode.maven.plugin</groupId>
+						<groupId>com.googlecode.mojo.trac</groupId>
 						<artifactId>maven-trac-plugin</artifactId>
 						<executions>
 							<execution>
@@ -51,6 +130,7 @@
 										<userName>admin</userName>
 										<password>admin</password>
 									</basicAuth>
+									<milestoneBuild></milestoneBuild>
 									<tickets>
 										<ticket>
 											<summary>

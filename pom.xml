@@ -6,8 +6,8 @@
 	<artifactId>maven-trac-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>maven-trac-plugin Maven Mojo</name>
-	<url>http://maven.apache.org</url>
+	<name>Maven Trac Plugin.</name>
+	<url>http://code.google.com/p/maven-trac-plugin</url>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -15,59 +15,20 @@
 			<version>2.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.mylyn.trac</groupId>
-			<artifactId>core</artifactId>
-			<version>3.0.3.v20081015-1500-e3x</version>
-			<scope>system</scope>
-			<systemPath>
-				${basedir}/mylyn-3.0.3.v20081015-1500-extras/plugins/org.eclipse.mylyn.trac.core_3.0.3.v20081015-1500-e3x.jar
-			</systemPath>
-			<exclusions>
-				<!-- 
-					<exclusion>
-					<groupId>org.eclipse.core</groupId>
-					<artifactId>runtime</artifactId>
-					</exclusion>
-				-->
-				<exclusion>
-					<groupId>org.eclipse.mylyn.tasks</groupId>
-					<artifactId>core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse</groupId>
-					<artifactId>search</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.mylyn.monitor</groupId>
-					<artifactId>core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.mylyn.context</groupId>
-					<artifactId>core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse</groupId>
-					<artifactId>mylyn</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.mylyn.web</groupId>
-					<artifactId>core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.equinox</groupId>
-					<artifactId>app</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-settings</artifactId>
+			<version>2.0</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-project</artifactId>
-			<version>2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlrpc</groupId>
@@ -98,13 +59,6 @@
 			</url>
 		</snapshotRepository>
 	</distributionManagement>
-
-	<repositories>
-		<repository>
-			<id>Eclipse</id>
-			<url>http://repo2.maven.org/eclipse/</url>
-		</repository>
-	</repositories>
 
 	<profiles>
 		<profile>

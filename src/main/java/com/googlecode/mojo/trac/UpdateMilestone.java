@@ -1,17 +1,9 @@
-package com.googlecode.maven.plugin;
+package com.googlecode.mojo.trac;
 
 public class UpdateMilestone {
 
-	/**
-	 * @parameter
-	 * @required
-	 */
 	private String milestone;
 
-	/**
-	 * @parameter expression="${pom.groupId}"
-	 * @required
-	 */
 	private String text;
 
 	public String getMilestone() {
@@ -28,6 +20,10 @@ public class UpdateMilestone {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public void validate() {
+		Utils.validateRequired("milestone", milestone);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.googlecode.maven.plugin;
+package com.googlecode.mojo.trac;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -20,7 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
@@ -32,7 +31,7 @@ import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
  * @goal new-ticket
  * @phase deploy
  */
-public class NewTicketMojo extends MavenTracMojo {
+public class NewTicketMojo extends AbstractTracMojo {
 
 	/**
 	 * Ticket Contents.
@@ -42,21 +41,23 @@ public class NewTicketMojo extends MavenTracMojo {
 	 */
 	private Map[] tickets;
 
-	public void execute() throws MojoExecutionException {
-		try {
-			validate();
-			newTickets();
-		} catch (Exception e) {
-			throw new MojoExecutionException("Error from maven-trac-plugin. "
-					+ e.getMessage(), e);
-
-		}
-	}
-
-	private void validate() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.googlecode.mojo.trac.AbstractTracMojo#validate()
+	 */
+	protected void validate() {
 		emptyCheck(new String[] { "summary", "description", "type",
 				"component", "priority" });
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.googlecode.mojo.trac.AbstractTracMojo#run()
+	 */
+	public void run() {
+		newTickets();
 	}
 
 	private void emptyCheck(String[] keys) {
@@ -67,41 +68,23 @@ public class NewTicketMojo extends MavenTracMojo {
 					throw new IllegalArgumentException(
 							"'"
 									+ keys[i]
-									+ "' is required in configuration of maven-trac-plugin.");
+									+ "' is required in configuration for maven-trac-plugin.");
 				}
 			}
 		}
 	}
 
-	private void newTickets() throws MalformedURLException, XmlRpcException {
-		XmlRpcClient client = new XmlRpcClient();
-		XmlRpcClientConfigImpl config = getClientConfig();
-
+	private void newTickets() {
 		for (int i = 0; i < tickets.length; i++) {
 			tickets[i].put("reporter", basicAuth.getUserName());
-			newTicket(client, config, tickets[i]);
+			newTicket(tickets[i]);
 		}
 	}
 
-	private void newTicket(XmlRpcClient client, XmlRpcClientConfigImpl config,
-			Map ticket) throws MalformedURLException, XmlRpcException {
-
-		if (!url.endsWith("xmlrpc") && !url.endsWith("xmlrpc/")) {
-			if (!url.endsWith("/")) {
-				url += "/";
-			}
-			url += "xmlrpc";
+	private void newTicket(Map ticket) {
+		if (!dryRun) {
+			int id = getTracClient().newTicket(ticket);
+			getLog().info("Created new-ticket #" + id + ".");
 		}
-		getLog().info("Connecting to " + url);
-
-		config.setServerURL(new URL(url));
-
-		String summary = (String) ticket.remove("summary");
-		String description = (String) ticket.remove("description");
-
-		Object execute = client.execute(config, "ticket.create", new Object[] {
-				summary, description, ticket, Boolean.FALSE });
-
-		getLog().info("Created new-ticket. id is " + execute + ".");
 	}
 }

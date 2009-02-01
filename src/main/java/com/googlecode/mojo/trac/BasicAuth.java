@@ -1,4 +1,4 @@
-package com.googlecode.maven.plugin;
+package com.googlecode.mojo.trac;
 
 public class BasicAuth {
 

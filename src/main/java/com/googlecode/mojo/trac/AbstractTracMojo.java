@@ -87,6 +87,17 @@ public abstract class AbstractTracMojo extends AbstractMojo {
 		}
 	}
 
+	protected String getDistUrl() {
+		String url = distUrl;
+		if (project.getVersion().endsWith("-SNAPSHOT")) {
+			url = distSnapshotUrl;
+		}
+		if (!url.endsWith("/")) {
+			url += "/";
+		}
+		return url;
+	}
+
 	protected void validate() {
 	}
 

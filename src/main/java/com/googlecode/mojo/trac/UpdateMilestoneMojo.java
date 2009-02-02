@@ -54,7 +54,7 @@ public class UpdateMilestoneMojo extends AbstractTracMojo {
 			getLog().info(distUrl);
 
 			getLog().info(distSnapshotUrl);
-			
+
 			getLog().info(settings.getServers().toString());
 		}
 	}
@@ -70,7 +70,8 @@ public class UpdateMilestoneMojo extends AbstractTracMojo {
 		}
 
 		String description = (String) milestoneAttr.get("description");
-		description = "== " + updateMilestone.getText() + " ==\n" + description;
+		description = updateMilestone.getPrependDescription() + " \n\n"
+				+ description + "\n\n" + updateMilestone.getAppendDescription();
 
 		milestoneAttr.put("description", description);
 

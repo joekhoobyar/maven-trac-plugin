@@ -4,7 +4,9 @@ public class UpdateMilestone {
 
 	private String milestone;
 
-	private String text;
+	private String prependDescription;
+
+	private String appendDescription;
 
 	public String getMilestone() {
 		return milestone;
@@ -14,12 +16,20 @@ public class UpdateMilestone {
 		this.milestone = milestone;
 	}
 
-	public String getText() {
-		return text;
+	public String getPrependDescription() {
+		return prependDescription;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setPrependDescription(String prependDescription) {
+		this.prependDescription = prependDescription;
+	}
+
+	public String getAppendDescription() {
+		return appendDescription;
+	}
+
+	public void setAppendDescription(String appendDescription) {
+		this.appendDescription = appendDescription;
 	}
 
 	public void validate() {

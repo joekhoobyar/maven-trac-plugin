@@ -16,14 +16,10 @@ package com.googlecode.mojo.trac;
  * limitations under the License.
  */
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.xmlrpc.XmlRpcException;
-import org.apache.xmlrpc.client.XmlRpcClient;
-import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * Goal which create new-ticket for trac.
@@ -87,4 +83,5 @@ public class NewTicketMojo extends AbstractTracMojo {
 			getLog().info("Created new-ticket #" + id + ".");
 		}
 	}
+
 }

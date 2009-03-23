@@ -70,14 +70,28 @@ public class UpdateMilestoneMojo extends AbstractTracMojo {
 		}
 
 		String description = (String) milestoneAttr.get("description");
-		description = updateMilestone.getPrependDescription() + " \n\n"
-				+ description + "\n\n" + updateMilestone.getAppendDescription();
+		StringBuilder sb = new StringBuilder(description);
 
-		milestoneAttr.put("description", description);
+		prepend(sb);
+		append(sb);
+
+		milestoneAttr.put("description", sb.toString());
 
 		if (!dryRun) {
 			getTracClient().updateMilestone(updateMilestone.getMilestone(),
 					milestoneAttr);
+		}
+	}
+
+	private void append(StringBuilder sb) {
+		if (updateMilestone.getAppendDescription() != null) {
+			sb.append("\n\n" + updateMilestone.getAppendDescription());
+		}
+	}
+
+	private void prepend(StringBuilder sb) {
+		if (updateMilestone.getPrependDescription() != null) {
+			sb.insert(0, updateMilestone.getPrependDescription() + " \n\n");
 		}
 	}
 }

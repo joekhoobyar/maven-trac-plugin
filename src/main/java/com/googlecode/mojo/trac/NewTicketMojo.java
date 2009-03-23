@@ -16,10 +16,7 @@ package com.googlecode.mojo.trac;
  * limitations under the License.
  */
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 /**
  * Goal which create new-ticket for trac.

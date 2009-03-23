@@ -2,6 +2,10 @@ package com.googlecode.mojo.trac;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.plugin.logging.Log;
@@ -81,11 +85,69 @@ public class TracXmlRpcClient {
 	 * @param milestone
 	 * @return
 	 */
-	public Map getMilestone(String milestone) {
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getMilestone(String milestone) {
 		Object execute = execute("ticket.milestone.get",
 				new Object[] { milestone });
 
-		return (Map) execute;
+		return (Map<String, Object>) execute;
+	}
+
+	/**
+	 * Get All Milestones.
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getMilestoneAll() {
+
+		Object[] list = (Object[]) execute("ticket.milestone.getAll",
+				new Object[] {});
+
+		List<Object> command = new ArrayList<Object>();
+
+		for (Object milestoneName : list) {
+			Map<String, Object> table = new HashMap<String, Object>();
+			table.put("methodName", "ticket.milestone.get");
+			table.put("params", new Object[] { milestoneName });
+			command.add(table);
+		}
+
+		Object[] result = (Object[]) execute("system.multicall",
+				new Object[] { command.toArray(new Object[command.size()]) });
+
+		List<Map<String, Object>> rtn = new ArrayList<Map<String, Object>>();
+
+		for (Object object : result) {
+			rtn.add((Map<String, Object>) ((Object[]) object)[0]);
+		}
+
+		return rtn;
+	}
+
+	/**
+	 * Get All Milestones which not completed.
+	 * 
+	 * @return
+	 */
+	public List<Map<String, Object>> getOpenMilestoneAll() {
+		List<Map<String, Object>> milestones = getMilestoneAll();
+
+		List<Map<String, Object>> rtn = new ArrayList<Map<String, Object>>();
+
+		for (Map<String, Object> milestone : milestones) {
+			Object comp = milestone.get("completed");
+			if (comp instanceof Integer) {
+
+				if ((Integer) comp == 0) {
+					rtn.add(milestone);
+				}
+			} else {
+				;
+			}
+		}
+
+		return rtn;
 	}
 
 	/**

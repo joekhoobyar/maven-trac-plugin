@@ -16,6 +16,8 @@ package com.googlecode.mojo.trac;
  * limitations under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -78,13 +80,73 @@ public abstract class AbstractTracMojo extends AbstractMojo {
 	 */
 	protected String distSnapshotUrl;
 
+	/**
+	 * 
+	 * @parameter expression="${project.distributionManagement}"
+	 * @readonly
+	 */
+	protected DistributionManagement distributionManagement;
+
+	/**
+	 * @parameter
+	 */
+	protected DownloadUrls downloadUrls;
+
+	public void setDownloadUrls(DownloadUrls downloadUrls) {
+		getLog().debug("setDownloadUrls.");
+		this.downloadUrls = downloadUrls;
+	}
+
+	/**
+	 * set property "maven.trac.distUrl".
+	 * 
+	 * @param project
+	 */
+	public void setProject(MavenProject project) {
+		this.project = project;
+
+		String downloadUrl = getDownloadUrl();
+
+		getLog().info("Setting \"maven.trac.distUrl\" = " + downloadUrl);
+
+		this.project.getProperties()
+				.put("maven.trac.distUrl", getDownloadUrl());
+
+	}
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			validate();
 			run();
-		} catch (Exception e) {
+
+			Artifact artifact = project.getArtifact();
+			System.out.println(artifact);
+
+			System.out.println(project.getAttachedArtifacts());
+
+		} catch (RuntimeException e) {
 			handleException(e);
 		}
+	}
+
+	protected String getDownloadUrl() {
+
+		if (downloadUrls == null) {
+			return "undefiened";
+		}
+
+		String url;
+
+		if (project.getVersion().endsWith("-SNAPSHOT")) {
+			url = downloadUrls.getSnapshotUrl();
+		} else {
+			url = downloadUrls.getReleaseUrl();
+		}
+
+		if (!url.endsWith("/")) {
+			url += "/";
+		}
+		return url;
 	}
 
 	protected String getDistUrl() {
@@ -101,7 +163,8 @@ public abstract class AbstractTracMojo extends AbstractMojo {
 	protected void validate() {
 	}
 
-	abstract protected void run();
+	abstract protected void run() throws MojoExecutionException,
+			MojoFailureException;
 
 	protected TracXmlRpcClient getTracClient() {
 		return new TracXmlRpcClient(getLog(), url, basicAuth);

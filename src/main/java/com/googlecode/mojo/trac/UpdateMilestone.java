@@ -8,6 +8,8 @@ public class UpdateMilestone {
 
 	private String appendDescription;
 
+	private boolean createArtifactTable = false;
+
 	public String getMilestone() {
 		return milestone;
 	}
@@ -30,6 +32,14 @@ public class UpdateMilestone {
 
 	public void setAppendDescription(String appendDescription) {
 		this.appendDescription = appendDescription;
+	}
+
+	public boolean isCreateArtifactTable() {
+		return createArtifactTable;
+	}
+
+	public void setCreateArtifactTable(boolean createArtifactTable) {
+		this.createArtifactTable = createArtifactTable;
 	}
 
 	public void validate() {

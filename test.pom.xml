@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.googlecode.mojo.trac</groupId>
+	<artifactId>maven-trac-plugin-test</artifactId>
+	<packaging>jar</packaging>
+	<version>0.2</version>
+	<name>Maven Trac Plugin.</name>
+	<url>http://code.google.com/p/maven-trac-plugin</url>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.googlecode.mojo.trac</groupId>
+				<artifactId>maven-trac-plugin</artifactId>
+				<configuration>
+					<url>
+						http://localhost:8000/myproject/login/xmlrpc
+					</url>
+					<basicAuth>
+						<userName>admin</userName>
+						<password>admin</password>
+					</basicAuth>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>maven-trac-plugin.googlecode.releases</id>
+			<name>maven-trac-plugin.googlecode.releases</name>
+			<url>
+				dav:https://maven-trac-plugin.googlecode.com/svn/maven2/
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>maven-trac-plugin.googlecode.snapshots</id>
+			<name>maven-trac-plugin.googlecode.snapshots</name>
+			<url>
+				dav:https://maven-trac-plugin.googlecode.com/svn/maven2-snapshots/
+			</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>

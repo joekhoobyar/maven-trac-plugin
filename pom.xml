@@ -5,13 +5,32 @@
 	<groupId>com.googlecode.mojo.trac</groupId>
 	<artifactId>maven-trac-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>0.1</version>
+	<version>0.2</version>
 	<name>Maven Trac Plugin.</name>
 	<url>http://code.google.com/p/maven-trac-plugin</url>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
 			<version>2.0</version>
 		</dependency>
 		<dependency>
@@ -62,6 +81,26 @@
 
 	<profiles>
 		<profile>
+			<id>default</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.googlecode.mojo.trac</groupId>
+						<artifactId>maven-trac-plugin</artifactId>
+						<configuration>
+							<url>
+								http://localhost:8000/myproject/login/xmlrpc
+							</url>
+							<basicAuth>
+								<userName>admin</userName>
+								<password>admin</password>
+							</basicAuth>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>test</id>
 			<build>
 				<plugins>
@@ -71,7 +110,7 @@
 						<executions>
 							<execution>
 								<id>test</id>
-								<phase>deploy</phase>
+								<phase>install</phase>
 								<goals>
 									<goal>new-ticket</goal>
 								</goals>
@@ -89,8 +128,9 @@
 												<![CDATA[Build Success. ${pom.groupId}:${pom.artifactId}:${pom.version} was deployed.]]>
 											</summary>
 											<description><![CDATA[
-Build Success. ${pom.groupId}:${pom.artifactId}:${pom.version} was deployed.[[BR]]
-If you need this module you will add a dependency like this:
+Build Success. [[BR]]
+${pom.groupId}:${pom.artifactId}:${pom.version} was deployed.[[BR]]
+If you need this module you will add a dependency in your POM like this:
 {{{
 <dependency>
 	<groupId>${pom.groupId}</groupId>
@@ -98,6 +138,7 @@ If you need this module you will add a dependency like this:
 	<version>${pom.version}</version>
 </dependency>
 }}}
+or download from [${maven.trac.distUrl}].
 ]]></description>
 											<type>defect</type>
 											<component>
@@ -109,6 +150,14 @@ If you need this module you will add a dependency like this:
 											</milestone>
 										</ticket>
 									</tickets>
+									<downloadUrls>
+										<releaseUrl>
+											http://localhost/releases/
+										</releaseUrl>
+										<snapshotUrl>
+											http://localhost/snapshots/
+										</snapshotUrl>
+									</downloadUrls>
 								</configuration>
 							</execution>
 						</executions>

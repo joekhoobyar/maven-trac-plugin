@@ -20,11 +20,12 @@ public class TestTracXmlRpcClient {
 				"http://localhost:8000/myproject/login/xmlrpc", auth);
 
 		List<Map<String, Object>> ms = client.getMilestoneAll();
-//		System.out.println(ms);
 		
 		List<Map<String, Object>> openMs = client.getOpenMilestoneAll();
 		
 		System.out.println(openMs.size());
+		System.out.println(openMs.get(0).get("due").getClass());
+		
 	}
 
 }

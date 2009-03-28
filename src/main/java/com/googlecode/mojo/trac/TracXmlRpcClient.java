@@ -2,12 +2,16 @@ package com.googlecode.mojo.trac;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
@@ -94,6 +98,27 @@ public class TracXmlRpcClient {
 	}
 
 	/**
+	 * Get Milestones.
+	 * 
+	 * @param milestones
+	 *            comma separeted milestoneName.
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getMilestones(String milestones) {
+
+		String[] split = StringUtils.split(milestones, ',');
+
+		List<Map<String, Object>> rtn = new ArrayList<Map<String, Object>>();
+
+		for (String milestone : split) {
+			Map<String, Object> milestoneMap = getMilestone(milestone);
+			rtn.add(milestoneMap);
+		}
+		return rtn;
+	}
+
+	/**
 	 * Get All Milestones.
 	 * 
 	 * @return
@@ -157,7 +182,21 @@ public class TracXmlRpcClient {
 	 * @param description
 	 * @return
 	 */
-	public int updateMilestone(String milestone, Map milestoneAttr) {
+	public int updateMilestone(String milestone,
+			Map<String, Object> milestoneAttr) {
+
+		getLog().info("Update milestone... : " + milestone);
+
+		if (getLog().isDebugEnabled()) {
+			getLog().debug(milestoneAttr.toString());
+		}
+
+		// remove "due" because of a probrem(http://trac-hacks.org/ticket/3011)
+		Object object = milestoneAttr.get("due");
+		if (object != null) {
+			milestoneAttr.remove("due");
+		}
+
 		Object execute = execute("ticket.milestone.update", new Object[] {
 				milestone, milestoneAttr });
 

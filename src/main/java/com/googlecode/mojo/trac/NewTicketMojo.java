@@ -39,7 +39,7 @@ public class NewTicketMojo extends AbstractTracMojo {
 	 * 
 	 * @see com.googlecode.mojo.trac.AbstractTracMojo#validate()
 	 */
-	protected void validate() {
+	protected void setup() {
 		emptyCheck(new String[] { "summary", "description", "type",
 				"component", "priority" });
 	}

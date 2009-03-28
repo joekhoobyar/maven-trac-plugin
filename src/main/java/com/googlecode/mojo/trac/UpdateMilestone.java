@@ -42,8 +42,4 @@ public class UpdateMilestone {
 		this.createArtifactTable = createArtifactTable;
 	}
 
-	public void validate() {
-		Utils.validateRequired("milestone", milestone);
-	}
-
 }

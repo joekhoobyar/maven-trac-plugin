@@ -16,7 +16,15 @@ package com.googlecode.mojo.trac;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.components.interactivity.Prompter;
+import org.codehaus.plexus.components.interactivity.PrompterException;
 
 /**
  * Goal which edit milestone of trac.
@@ -33,53 +41,140 @@ public class UpdateMilestoneMojo extends AbstractTracMojo {
 	 */
 	private UpdateMilestone updateMilestone;
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Target milestone name.
 	 * 
-	 * @see com.googlecode.mojo.trac.AbstractTracMojo#validate()
+	 * @parameter expression="${trac.milestone.name}"
 	 */
-	protected void validate() {
-		updateMilestone.validate();
+	private String milestoneNames;
+
+	/**
+	 * 
+	 * @component
+	 */
+	private Prompter prompter;
+
+	protected void setup() throws MojoExecutionException, MojoFailureException {
+
+		// validate settings.
+		if (updateMilestone == null) {
+			throw new IllegalArgumentException("Plsease set updateMilestone.");
+		}
+		if (updateMilestone.getMilestone() == null && milestoneNames == null
+				&& !interactive) {
+			throw new IllegalArgumentException(
+					"Please set milestoneNames, or execute in interactive mode.");
+		}
+
+		// if milestoneNames isn't defined with pom.xml or mvn
+		// option(-Dtrac.milstone.name=...), set milestoneNames interactivity.
+		if (updateMilestone.getMilestone() == null && milestoneNames == null
+				&& interactive) {
+			milestoneNames = configureMilestoneNames();
+		}
+
+		// overwrite milestoneNames.
+		if (milestoneNames != null) {
+			updateMilestone.setMilestone(milestoneNames);
+		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.googlecode.mojo.trac.AbstractTracMojo#run()
-	 */
-	public void run() {
-		if (updateMilestone != null) {
-			editMilestone();
+	private String configureMilestoneNames() throws MojoExecutionException,
+			MojoFailureException {
 
-			getLog().info(distUrl);
+		List<Map<String, Object>> milestones = getTracClient()
+				.getOpenMilestoneAll();
 
-			getLog().info(distSnapshotUrl);
-
-			getLog().info(settings.getServers().toString());
+		if (milestones.size() == 0) {
+			throw new MojoFailureException(
+					"Open Milestone isn't found. Please check Trac Rodadmap.");
 		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Open Milestone List.");
+		sb.append(Utils.LINE_SEPARATOR);
+		sb.append(Utils.LINE_SEPARATOR);
+
+		for (int index = 1; index <= milestones.size(); index++) {
+			sb.append(index + ": "
+					+ milestones.get(index - 1).get("name").toString());
+			sb.append(Utils.LINE_SEPARATOR);
+		}
+
+		sb.append(Utils.LINE_SEPARATOR);
+		sb.append("Choose numbers(Space or comma delimited)");
+
+		try {
+			String[] numbers;
+
+			do {
+				String input = prompter.prompt(sb.toString());
+
+				try {
+					if (StringUtils.contains(input, ',')) {
+						numbers = StringUtils.split(input, ',');
+					} else if (StringUtils.contains(input, ' ')) {
+						numbers = StringUtils.split(input, ' ');
+					} else {
+						numbers = new String[] { input };
+					}
+
+					List<String> milestoneNames = new ArrayList<String>();
+					for (String number : numbers) {
+
+						Map<String, Object> milestone = milestones.get(Integer
+								.parseInt(number.trim()) - 1);
+
+						String milestonName = milestone.get("name").toString();
+						milestoneNames.add(milestonName);
+					}
+
+					return StringUtils.join(milestoneNames, ',');
+
+				} catch (NumberFormatException ignore) {
+
+				} catch (IndexOutOfBoundsException ignore) {
+
+				}
+
+			} while (true);
+
+		} catch (PrompterException e) {
+			throw new MojoExecutionException("Configure mileston name error.",
+					e);
+		}
+	}
+
+	public void run() throws MojoExecutionException, MojoFailureException {
+		editMilestone();
 	}
 
 	private void editMilestone() {
 
-		Map milestoneAttr = getTracClient().getMilestone(
-				updateMilestone.getMilestone());
+		List<Map<String, Object>> milestoneAttrs = getTracClient()
+				.getMilestones(updateMilestone.getMilestone());
 
-		if (getLog().isDebugEnabled()) {
-			getLog().debug(
-					"Get milestone. This content is {" + milestoneAttr + "}");
-		}
+		for (Map<String, Object> milestoneAttr : milestoneAttrs) {
 
-		String description = (String) milestoneAttr.get("description");
-		StringBuilder sb = new StringBuilder(description);
+			if (getLog().isDebugEnabled()) {
+				getLog().debug(
+						"Get milestone. This content is {" + milestoneAttr
+								+ "}");
+			}
 
-		prepend(sb);
-		append(sb);
+			String description = (String) milestoneAttr.get("description");
+			StringBuilder sb = new StringBuilder(description);
 
-		milestoneAttr.put("description", sb.toString());
+			prepend(sb);
+			append(sb);
 
-		if (!dryRun) {
-			getTracClient().updateMilestone(updateMilestone.getMilestone(),
-					milestoneAttr);
+			milestoneAttr.put("description", sb.toString());
+
+			if (!dryRun) {
+				getTracClient().updateMilestone(
+						(String) milestoneAttr.get("name"), milestoneAttr);
+			}
 		}
 	}
 

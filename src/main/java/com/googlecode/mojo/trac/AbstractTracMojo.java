@@ -16,7 +16,8 @@ package com.googlecode.mojo.trac;
  * limitations under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
+import java.util.Set;
+
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -43,6 +44,13 @@ public abstract class AbstractTracMojo extends AbstractMojo {
 	 * @required
 	 */
 	protected Settings settings;
+
+	/**
+	 * Enable the interactive mode to set milestone.
+	 * 
+	 * @parameter expression="${interactive}" default-value="true"
+	 */
+	protected boolean interactive;
 
 	/**
 	 * URL of the trac.
@@ -98,69 +106,60 @@ public abstract class AbstractTracMojo extends AbstractMojo {
 	}
 
 	/**
-	 * set property "maven.trac.distUrl".
+	 * set property "trac.distBaseUrl".
 	 * 
 	 * @param project
 	 */
 	public void setProject(MavenProject project) {
 		this.project = project;
 
-		String downloadUrl = getDownloadUrl();
+		String downloadUrl = getDistBaseUrl();
 
-		getLog().info("Setting \"maven.trac.distUrl\" = " + downloadUrl);
+		getLog().info("Setting \"trac.distBaseUrl\" = " + downloadUrl);
 
-		this.project.getProperties()
-				.put("maven.trac.distUrl", getDownloadUrl());
+		this.project.getProperties().put("trac.distBaseUrl", getDistBaseUrl());
 
 	}
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			validate();
+			setup();
 			run();
-
-			Artifact artifact = project.getArtifact();
-			System.out.println(artifact);
-
-			System.out.println(project.getAttachedArtifacts());
 
 		} catch (RuntimeException e) {
 			handleException(e);
 		}
 	}
 
-	protected String getDownloadUrl() {
+	protected String getDistBaseUrl() {
 
 		if (downloadUrls == null) {
 			return "undefiened";
 		}
 
-		String url;
+		StringBuilder url = new StringBuilder();
 
 		if (project.getVersion().endsWith("-SNAPSHOT")) {
-			url = downloadUrls.getSnapshotUrl();
+			url.append(downloadUrls.getSnapshotUrl());
 		} else {
-			url = downloadUrls.getReleaseUrl();
+			url.append(downloadUrls.getReleaseUrl());
 		}
 
-		if (!url.endsWith("/")) {
-			url += "/";
+		if (!url.toString().endsWith("/")) {
+			url.append("/");
 		}
-		return url;
+
+		String groupId = project.getGroupId().replace('.', '/');
+		url.append(groupId);
+		url.append("/");
+		url.append(project.getArtifactId());
+		url.append("/");
+		url.append(project.getVersion());
+
+		return url.toString();
 	}
 
-	protected String getDistUrl() {
-		String url = distUrl;
-		if (project.getVersion().endsWith("-SNAPSHOT")) {
-			url = distSnapshotUrl;
-		}
-		if (!url.endsWith("/")) {
-			url += "/";
-		}
-		return url;
-	}
-
-	protected void validate() {
+	protected void setup() throws MojoExecutionException, MojoFailureException {
 	}
 
 	abstract protected void run() throws MojoExecutionException,

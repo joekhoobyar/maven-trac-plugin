@@ -5,40 +5,58 @@
 	<groupId>com.googlecode.mojo.trac</groupId>
 	<artifactId>maven-trac-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>0.3</version>
+	<version>0.2</version>
 	<name>Maven Trac Plugin.</name>
 	<url>http://code.google.com/p/maven-trac-plugin</url>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<groupId>com.googlecode.mojo.trac</groupId>
+				<artifactId>maven-trac-plugin</artifactId>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<url>
+						http://localhost:8000/myproject/login/xmlrpc
+					</url>
+					<basicAuth>
+						<userName>admin</userName>
+						<password>admin</password>
+					</basicAuth>
+					<downloadUrls>
+						<releaseUrl>
+							http://localhost/releases/
+						</releaseUrl>
+						<snapshotUrl>
+							http://localhost/snapshots/
+						</snapshotUrl>
+					</downloadUrls>
+					<updateMilestone>
+						<prependDescription><![CDATA[
+=== Milestone Artifact - ${pom.groupId}:${pom.artifactId}:${pom.version} ===
+Download Link:[${trac.distBaseUrl}/${pom.artifactId}-${pom.version}.jar]
+{{{
+<dependency>
+	<groupId>${pom.groupId}</groupId>
+	<artifactId>${pom.artifactId}</artifactId>
+	<version>${pom.version}</version>
+</dependency>
+}}}
+]]></prependDescription>
+					</updateMilestone>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.plexus</groupId>
-				<artifactId>plexus-maven-plugin</artifactId>
-				<version>1.3.8</version>
 				<executions>
 					<execution>
+						<id>test</id>
+						<phase>compile</phase>
 						<goals>
-							<goal>descriptor</goal>
+							<goal>update-milestone</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<artifactId>maven-plugin-plugin</artifactId>
-				<configuration>
-					<goalPrefix>trac</goalPrefix>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
+
 
 	<dependencies>
 		<dependency>

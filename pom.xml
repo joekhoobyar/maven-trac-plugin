@@ -96,14 +96,14 @@
 			<id>maven-trac-plugin.googlecode.releases</id>
 			<name>maven-trac-plugin.googlecode.releases</name>
 			<url>
-				dav:https://maven-trac-plugin.googlecode.com/svn/maven2/
+				dav:https://maven-trac-plugin.googlecode.com/svn/maven2/releases
 			</url>
 		</repository>
 		<snapshotRepository>
 			<id>maven-trac-plugin.googlecode.snapshots</id>
 			<name>maven-trac-plugin.googlecode.snapshots</name>
 			<url>
-				dav:https://maven-trac-plugin.googlecode.com/svn/maven2-snapshots/
+				dav:https://maven-trac-plugin.googlecode.com/svn/maven2/snapshots/
 			</url>
 		</snapshotRepository>
 	</distributionManagement>

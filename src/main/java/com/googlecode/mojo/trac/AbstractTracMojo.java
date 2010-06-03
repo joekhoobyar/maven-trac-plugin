@@ -16,8 +16,6 @@ package com.googlecode.mojo.trac;
  * limitations under the License.
  */
 
-import java.util.Set;
-
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

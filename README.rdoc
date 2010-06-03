@@ -4,7 +4,15 @@ Maven Plugin for Trac.
 
 Forked from the Google Code project at http://code.google.com/p/maven-trac-plugin/ owned by *wadahiro*.  The goals of this fork are:
 
+Main project goals:
+
 * Add additional mojos for interacting with Trac, such as version administration.
 * Provide additional lifecycle hooks for the project release cycle.
-* maybe more?
+
+Possible additional goals (just brainstorming here):
+
+* Factor away the TracXmlRpcClient class in favor of an simpler approach:
+  * Option 1) use a dynamic proxy so we can call methods on objects instead (like Trac's example XML-RPC java client)
+  * Option 2) use code-generation and/or AspectJ
+  * Option 3) a combination of the above?
 

@@ -1,0 +1,10 @@
+= maven-trac-plugin
+
+Maven Plugin for Trac.
+
+Forked from the Google Code project at http://code.google.com/p/maven-trac-plugin/ owned by *wadahiro*.  The goals of this fork are:
+
+* Add additional mojos for interacting with Trac, such as version administration.
+* Provide additional lifecycle hooks for the project release cycle.
+* maybe more?
+

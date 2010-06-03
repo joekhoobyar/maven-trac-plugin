@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.logging.Log;
@@ -76,6 +77,93 @@ public class TracXmlRpcClient {
 		Object execute = execute("ticket.create", new Object[] { summary,
 				description, ticket, Boolean.FALSE });
 
+		return ((Integer) execute).intValue();
+	}
+
+	/**
+	 * Get Version.
+	 * 
+	 * @param version
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getVersion(String version) {
+		Object execute = execute("ticket.version.get", new Object[] { version });
+		return (Map<String, Object>) execute;
+	}
+
+	/**
+	 * Get all Versions that match the given pattern.
+	 * 
+	 * @param pattern
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getVersionsMatching(Pattern pattern) {
+		String[] list = (String[]) execute("ticket.version.getAll", new Object[] {});
+
+		List<Object> command = new ArrayList<Object>();
+		for (String versionName : list) {
+			if (pattern != null && ! pattern.matcher (versionName).matches ())
+				continue;
+			Map<String, Object> table = new HashMap<String, Object>();
+			table.put("methodName", "ticket.version.get");
+			table.put("params", new Object[] { versionName });
+			command.add(table);
+		}
+
+		Object[] result = (Object[]) execute("system.multicall",
+				new Object[] { command.toArray(new Object[command.size()]) });
+
+		List<Map<String, Object>> rtn = new ArrayList<Map<String, Object>>();
+		for (Object object : result) {
+			rtn.add((Map<String, Object>) ((Object[]) object)[0]);
+		}
+
+		return rtn;
+	}
+
+	/**
+	 * Create Version.
+	 * 
+	 * @param version
+	 * @param versionAttr
+	 * @return
+	 */
+	public int createVersion(String version, Map<String, Object> versionAttr) {
+		getLog().info ("Create version... : " + version);
+		if (getLog().isDebugEnabled())
+			getLog().debug (versionAttr.toString());
+		Object execute = execute ("ticket.version.create", new Object[] {
+				version, versionAttr });
+		return ((Integer) execute).intValue();
+	}
+
+	/**
+	 * Update Version.
+	 * 
+	 * @param version
+	 * @param versionAttr
+	 * @return
+	 */
+	public int updateVersion(String version, Map<String, Object> versionAttr) {
+		getLog().info ("Update version... : " + version);
+		if (getLog().isDebugEnabled())
+			getLog().debug (versionAttr.toString());
+		Object execute = execute ("ticket.version.update", new Object[] {
+				version, versionAttr });
+		return ((Integer) execute).intValue();
+	}
+
+	/**
+	 * Delete Version.
+	 * 
+	 * @param version
+	 * @return
+	 */
+	public int deleteVersion(String version) {
+		getLog().info ("Delete version... : " + version);
+		Object execute = execute ("ticket.version.delete", new Object[] { version });
 		return ((Integer) execute).intValue();
 	}
 
